@@ -36395,6 +36395,7 @@ var App = function (_React$Component) {
     };
     _this.handleSubmit = _this.handleSubmit.bind(_this);
     _this.handleChange = _this.handleChange.bind(_this);
+    _this.handleDelete = _this.handleDelete.bind(_this);
     return _this;
   }
 
@@ -36438,76 +36439,114 @@ var App = function (_React$Component) {
       this.setState({ form: form });
     }
   }, {
+    key: 'handleDelete',
+    value: function handleDelete(id) {
+      var _this4 = this;
+
+      console.log(id);
+      _axios2.default.delete('http://localhost:5000/api/posts/' + id).then(function (response) {
+        console.log("Slide added successful: ", response);
+        fetch('http://localhost:5000/api/posts').then(function (resp) {
+          return resp.json();
+        }).then(function (posts) {
+          _this4.setState({ posts: posts });
+        });
+      }).catch(function (error) {
+        console.log("Error: ", error);
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var _this5 = this;
+
       return _react2.default.createElement(
         'div',
         { className: 'container' },
         _react2.default.createElement(
           'div',
-          { className: 'my-3' },
+          { className: 'row' },
           _react2.default.createElement(
-            'h2',
-            null,
-            'Create a post:'
-          ),
-          _react2.default.createElement(
-            'form',
-            { onSubmit: this.handleSubmit },
+            'div',
+            { className: 'col-md-4' },
             _react2.default.createElement(
               'div',
-              { className: 'form-group' },
+              { className: 'my-3' },
               _react2.default.createElement(
-                'label',
+                'h2',
                 null,
-                'Name:',
-                _react2.default.createElement('input', { className: 'form-control', id: 'name', onChange: this.handleChange })
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
+                'Create a post:'
+              ),
               _react2.default.createElement(
-                'label',
-                null,
-                'Content:',
-                _react2.default.createElement('textarea', { id: 'content', className: 'form-control', onChange: this.handleChange })
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
-              _react2.default.createElement('input', { className: 'btn btn-primary', type: 'submit', value: 'Submit' })
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'my-3' },
-          _react2.default.createElement(
-            'h2',
-            null,
-            'List of all posts:'
-          ),
-          _react2.default.createElement(
-            'ul',
-            { className: 'list-group' },
-            this.state.posts.map(function (post) {
-              return _react2.default.createElement(
-                'li',
-                { className: 'list-group-item' },
+                'form',
+                { onSubmit: this.handleSubmit },
                 _react2.default.createElement(
-                  'h2',
-                  null,
-                  post.name
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement(
+                    'label',
+                    { className: 'w-100' },
+                    'Name:',
+                    _react2.default.createElement('input', { className: 'form-control', id: 'name', onChange: this.handleChange })
+                  )
                 ),
                 _react2.default.createElement(
-                  'p',
-                  null,
-                  post.content
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement(
+                    'label',
+                    { className: 'w-100' },
+                    'Content:',
+                    _react2.default.createElement('textarea', { id: 'content', className: 'form-control', onChange: this.handleChange })
+                  )
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement('input', { className: 'btn btn-primary', type: 'submit', value: 'Submit' })
                 )
-              );
-            })
+              )
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'col-md-8' },
+            _react2.default.createElement(
+              'div',
+              { className: 'my-3' },
+              _react2.default.createElement(
+                'h2',
+                null,
+                'List of all posts:'
+              ),
+              _react2.default.createElement(
+                'ul',
+                { className: 'list-group' },
+                this.state.posts.map(function (post) {
+                  return _react2.default.createElement(
+                    'li',
+                    { className: 'list-group-item' },
+                    _react2.default.createElement(
+                      'h2',
+                      null,
+                      post.name
+                    ),
+                    _react2.default.createElement(
+                      'p',
+                      null,
+                      post.content
+                    ),
+                    _react2.default.createElement(
+                      'button',
+                      { className: 'btn btn-danger', onClick: function onClick() {
+                          return _this5.handleDelete(post._id);
+                        } },
+                      'Remove'
+                    )
+                  );
+                })
+              )
+            )
           )
         )
       );
