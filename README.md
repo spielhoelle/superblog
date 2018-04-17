@@ -19,7 +19,7 @@ MONGOURL=mongodb://localhost/superblog
 - GET `/api/posts` all posts
 - POST `/api/posts` creates a post. The request body must contain the post itself. See model
 - DELETE `/api/posts:id` deletes a post by given id eg: `/api/posts/5ad4ce741a411bc2cb787445`
-- PUT `/api/posts:id` deletes a post by given id
+- PUT `/api/posts:id` updates a post by given id
   eg: `/api/posts/5ad4ce741a411bc2cb787445`
 
 # Model
