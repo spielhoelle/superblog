@@ -6,9 +6,11 @@ This is a little node server with CRUD interface:
 # Installation
 Install npm stuff `npm i`
 
-Create a copy of env file: `cp .env.example .env`  and set your credentials
-
-
+Create a copy of env file: `cp .env.example .env`  and set your credentials. Eg:
+```
+PORT=5000
+MONGOURL=mongodb://localhost/superblog
+```
 # Start node server
 
 `node server/server.js`
@@ -24,6 +26,6 @@ Create a copy of env file: `cp .env.example .env`  and set your credentials
 ```javascript
 {
     name: String,
-    age: Number
-}
-```
+    content: String,
+    order: Number
+}```

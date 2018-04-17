@@ -8,7 +8,8 @@ module.exports = function(router){
     .post(function(req, res) {
       var post = new Post();      // create a new instance of the post model
       post.name = req.body.name;  // set the posts name (comes from the request)
-      post.age = req.body.age;  // set the posts name (comes from the request)
+      post.content = req.body.content;  // set the posts name (comes from the request)
+      post.order = req.body.order;  // set the posts name (comes from the
 
       // save the post and check for errors
       post.save(function(err) {
@@ -51,7 +52,8 @@ module.exports = function(router){
           res.send(err);
 
         post.name = req.body.name;  // update the posts info
-        post.age = req.body.age;  // update the posts info
+        post.content = req.body.content;  // update the posts info
+        post.order = req.body.order;  // update the posts info
 
         // save the post
         post.save(function(err) {
