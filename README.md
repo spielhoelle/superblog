@@ -1,5 +1,7 @@
 # Superblog API
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/spielhoelle/superblog.svg)](https://greenkeeper.io/)
+
 This is a little node server with CRUD interface:
 
 

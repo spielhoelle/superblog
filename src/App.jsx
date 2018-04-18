@@ -70,6 +70,8 @@ class App extends React.Component {
       console.log("Slide edited successful: ", response);
       fetch(`http://localhost:5000/api/posts`).then(resp => resp.json()).then(posts => {
         this.setState({posts: posts, editing: null});
+        M.toast({html: 'Post updated successfully!'})
+
       });
     }).catch(function(error) {
       console.log("Error: ", error);
@@ -83,7 +85,7 @@ class App extends React.Component {
     })
   }
   render() {
-    const posttemplate =  this.state.posts.map(post => (
+    const posttemplate = this.state.posts.map(post => (
             this.state.editing && this.state.editing._id === post._id ? (
               <form onSubmit={(event) => this.handleUpdate(event, post)}>
                 <div className="form-group">
@@ -95,7 +97,7 @@ class App extends React.Component {
                 <div className="form-group">
                   <label className="w-100">
                     Content:
-                    <textarea id="content" className="form-control" defaultValue={this.state.editing.content} onChange={this.handleChange}/>
+                    <textarea id="content" className="materialize-textarea" defaultValue={this.state.editing.content} onChange={this.handleChange}/>
                   </label>
                 </div>
                 <div className="form-group">
@@ -128,7 +130,7 @@ class App extends React.Component {
                 <div className="form-group">
                   <label className="w-100">
                     Content:
-                    <textarea id="content" className="form-control" onChange={this.handleChange}/>
+                    <textarea id="content" className="materialize-textarea" onChange={this.handleChange}/>
                   </label>
                 </div>
                 <div className="form-group">
