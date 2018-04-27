@@ -14,6 +14,7 @@ const styles = {
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.searchRef = React.createRef();
     this.state = {
       posts: [],
       form: {},
@@ -59,15 +60,7 @@ class App extends React.Component {
   }
 
   handleSearch = (e) => {
-    let search = this.state.search ;
-    search = e.target.value
-    this.setState({search});
-
-    // let form = { ...this.state.form };
-    // if (e.target.value !== "") {
-    //   form[e.target.id] = e.target.value
-    // }
-    // this.setState({form: form});
+    this.setState({search: this.searchRef.current.value});
   }
 
   handleDelete(id) {
@@ -112,14 +105,13 @@ class App extends React.Component {
     // }
   }
   render() {
-    console.log("hey");
     const posts = this.state.search !== "" ? this.state.posts.filter(p => p.name.toLowerCase().includes(this.state.search.toLowerCase())) : this.state.posts
     const posttemplate =
               (<ul className="collection">
                 {posts.map(post => (
                         this.state.editing && this.state.editing._id === post._id ? (
                          <li className="black-text collection-item">
-                          <form onSubmit={(event) => this.handleUpdate(event, post)}>
+                          <form  onSubmit={(event) => this.handleUpdate(event, post)}>
                               <label className="w-100">
                                 Name:
                                 <input className="form-control" defaultValue={this.state.editing.name} id="name" onChange={this.handleChange}/>
@@ -185,7 +177,7 @@ class App extends React.Component {
                 <div className="nav-wrapper">
                   <form>
                     <div className="input-field">
-                      <input onChange={(e) => this.handleSearch(e)} id="search" placeholder="search postname" type="search" required/>
+                      <input onChange={(e) => this.handleSearch(e)} ref={this.searchRef} id="search" placeholder="search postname" type="search" required/>
                       <label className="label-icon" for="search"><i className="material-icons">search</i></label>
                       <i className="material-icons">close</i>
                     </div>
