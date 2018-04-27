@@ -1,22 +1,34 @@
 import React from 'react';
 import axios from 'axios';
 
+const styles = {
+  flexed: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  nomargin: {
+    margin: 0
+  }
+}
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       posts: [],
       form: {},
+      search: "",
       editing: null
     }
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleUnedit = this.handleUnedit.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
   }
-  componentWillMount() {
+  componentDidMount() {
     fetch(`http://localhost:5000/api/posts`).then(resp => resp.json()).then(posts => {
-      this.setState({posts: posts});
+      this.setState({posts});
     });
   }
   handleSubmit(event) {
@@ -31,17 +43,10 @@ class App extends React.Component {
          }
        }).then(response => response.json())
        .then(response => {
-         console.log(response)
-         let posts = {...this.state.posts}
-         //FIXME why is state posts and object of object and cannot pushed to?
-         var posts_array = []
-         for (var key in posts) {
-           if (posts.hasOwnProperty(key)) {
-             posts_array.push(posts[key])
-           }
-         }
-         posts_array.push(response.post)
-         this.setState({posts: posts_array});
+         M.toast({html: `Post ${form.name} created!`})
+         let posts = [...this.state.posts]
+         posts.push(response.post)
+         this.setState({posts});
        });
 
   }
@@ -52,12 +57,26 @@ class App extends React.Component {
     }
     this.setState({form: form});
   }
+
+  handleSearch = (e) => {
+    let search = this.state.search ;
+    search = e.target.value
+    this.setState({search});
+
+    // let form = { ...this.state.form };
+    // if (e.target.value !== "") {
+    //   form[e.target.id] = e.target.value
+    // }
+    // this.setState({form: form});
+  }
+
   handleDelete(id) {
     console.log(id);
     axios.delete(`http://localhost:5000/api/posts/${id}`).then(response => {
       console.log("Slide deleted successful: ", response);
       fetch(`http://localhost:5000/api/posts`).then(resp => resp.json()).then(posts => {
-        this.setState({posts: posts});
+        this.setState({posts});
+        M.toast({html: 'Post deleted!'})
       });
     }).catch(function(error) {
       console.log("Error: ", error);
@@ -69,7 +88,7 @@ class App extends React.Component {
     axios.put(`http://localhost:5000/api/posts/${post._id}`, this.state.form).then(response => {
       console.log("Slide edited successful: ", response);
       fetch(`http://localhost:5000/api/posts`).then(resp => resp.json()).then(posts => {
-        this.setState({posts: posts, editing: null});
+        this.setState({posts, editing: null});
         M.toast({html: 'Post updated successfully!'})
 
       });
@@ -84,43 +103,64 @@ class App extends React.Component {
       editing: post
     })
   }
+  handleUnedit(e) {
+    // if i click a button i dont want to toggle the edit mode
+    // if(!e.target.classList.value.includes("material-icons")) {
+        this.setState({
+        editing: null
+      })
+    // }
+  }
   render() {
-    const posttemplate = this.state.posts.map(post => (
-            this.state.editing && this.state.editing._id === post._id ? (
-              <form onSubmit={(event) => this.handleUpdate(event, post)}>
-                <div className="form-group">
-                  <label className="w-100">
-                    Name:
-                    <input className="form-control" defaultValue={this.state.editing.name} id="name" onChange={this.handleChange}/>
-                  </label>
-                </div>
-                <div className="form-group">
-                  <label className="w-100">
-                    Content:
-                    <textarea id="content" className="materialize-textarea" defaultValue={this.state.editing.content} onChange={this.handleChange}/>
-                  </label>
-                </div>
-                <div className="form-group">
-                  <input className="btn btn-primary" type="submit" value="Submit"/>
-                </div>
-              </form>
-          ) : (
-          <li className="list-group-item">
-            <h2>{ post.name}</h2>
-            <p>{post.content}</p>
-            <button className="btn btn-info" onClick={() => this.handleEdit(post)}>Edit</button>
-            <button className="btn btn-danger" onClick={() => this.handleDelete(post._id)}>Remove</button>
-          </li>
-        )
-      ))
+    console.log("hey");
+    const posts = this.state.search !== "" ? this.state.posts.filter(p => p.name.toLowerCase().includes(this.state.search.toLowerCase())) : this.state.posts
+    const posttemplate =
+              (<ul className="collection">
+                {posts.map(post => (
+                        this.state.editing && this.state.editing._id === post._id ? (
+                         <li className="black-text collection-item">
+                          <form onSubmit={(event) => this.handleUpdate(event, post)}>
+                              <label className="w-100">
+                                Name:
+                                <input className="form-control" defaultValue={this.state.editing.name} id="name" onChange={this.handleChange}/>
+                              </label>
+                              <label className="w-100">
+                                Content:
+                                <textarea id="content" className="materialize-textarea" defaultValue={this.state.editing.content} onChange={this.handleChange}/>
+                              </label>
+                            <div style={styles.flexed} className="">
+                              <a href="#!" className="" onClick={(e) => this.handleUnedit(e)}>cancel</a>
+                              <input className="btn green accent-2" type="submit" value="Submit"/>
+                            </div>
+                          </form>
+                          </li>
+                      ) : (
+                         <li className="black-text collection-item avatar">
+                          <i className="material-icons circle">folder</i>
+                          <span className="title">{ post.name}</span>
+                          <p>{post.content}</p>
+                          <div className="secondary-content">
+                            <a href="#!" className="" onClick={() => this.handleEdit(post)}><i className="material-icons teal-text">edit</i></a>
+                            <a href="#!" className="" onClick={() => this.handleDelete(post._id)}><i className="material-icons red-text">remove</i></a>
+                          </div>
+                        </li>
+                    )
+                  ))
+                }
+                </ul>)
 
     return (
-      <div className="container">
+      <div className="container" >
         <div className="row">
           <div className="col-md-4">
-            <div className="my-3">
-              <h2>Create a post:</h2>
-              <form onSubmit={this.handleSubmit}>
+            <div className="my-3 card">
+              <form className="card-content" onSubmit={this.handleSubmit}>
+                <div style={styles.flexed}>
+                  <h4 style={styles.nomargin}>Create a post:</h4>
+                  <div className="form-group">
+                    <input className="btn green accent-2" type="submit" value="Submit"/>
+                  </div>
+                </div>
                 <div className="form-group">
                   <label className="w-100">
                     Name:
@@ -133,18 +173,26 @@ class App extends React.Component {
                     <textarea id="content" className="materialize-textarea" onChange={this.handleChange}/>
                   </label>
                 </div>
-                <div className="form-group">
-                  <input className="btn btn-primary" type="submit" value="Submit"/>
-                </div>
               </form>
             </div>
           </div>
           <div className="col-md-8">
-            <div className="my-3">
-              <h2>List of all posts:</h2>
-              <ul className="list-group">
-                {posttemplate }
-              </ul>
+            <div className="my-3 card">
+              <div className="card-content">
+              <h4 style={styles.nomargin}>List of all posts:</h4>
+              </div>
+              <nav className="green accent-2">
+                <div className="nav-wrapper">
+                  <form>
+                    <div className="input-field">
+                      <input onChange={(e) => this.handleSearch(e)} id="search" placeholder="search postname" type="search" required/>
+                      <label className="label-icon" for="search"><i className="material-icons">search</i></label>
+                      <i className="material-icons">close</i>
+                    </div>
+                  </form>
+                </div>
+              </nav>
+              {posttemplate }
             </div>
           </div>
         </div>

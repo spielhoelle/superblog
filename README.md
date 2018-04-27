@@ -30,4 +30,5 @@ MONGOURL=mongodb://localhost/superblog
     name: String,
     content: String,
     order: Number
-}```
+}
+```
