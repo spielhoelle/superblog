@@ -15,10 +15,6 @@ export default class Post extends React.Component {
   constructor(props) {
     super(props);
   }
-  static getDerivedStateFromProps(nextProps, prevState){
-    console.log(nextProps, prevState);
-
-  }
     render() {
       return (
         <form name="submitform" className="card-content" onSubmit={this.props.handleSubmit}>

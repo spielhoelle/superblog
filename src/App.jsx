@@ -38,6 +38,7 @@ class App extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     let form = {...this.state.form}
+    console.log(form);
     fetch("http://localhost:5000/api/posts", {
          method: "POST",
          body: JSON.stringify(form),
@@ -63,7 +64,7 @@ class App extends React.Component {
   }
 
   handleSearch = (e) => {
-    this.setState({search: this.searchRef.current.value});
+    this.setState({search: e.target.value});
   }
 
   handleDelete(id) {
@@ -100,12 +101,9 @@ class App extends React.Component {
     })
   }
   handleUnedit(e) {
-    // if i click a button i dont want to toggle the edit mode
-    // if(!e.target.classList.value.includes("material-icons")) {
-        this.setState({
-        editing: null
-      })
-    // }
+    this.setState({
+      editing: null
+    })
   }
   render() {
     const posts = this.state.search !== "" ? this.state.posts.filter(p => p.name.toLowerCase().includes(this.state.search.toLowerCase())) : this.state.posts
@@ -113,6 +111,7 @@ class App extends React.Component {
               (<ul className="collection">
                 {posts.map(post => (
                   <Post
+                    key={post._id}
                     editing={this.state.editing}
                     handleUpdate={this.handleUpdate}
                     handleUnedit={this.handleUnedit}
@@ -129,6 +128,7 @@ class App extends React.Component {
       <div className="container" >
         <div className="row">
           <div className="col-md-4">
+            <h1 className="white-text">SuperBlog</h1>
             <div className="my-3 card">
               <CreatePost
                 handleChange={this.handleChange}
@@ -142,7 +142,7 @@ class App extends React.Component {
               <div className="card-content">
               <h4 style={styles.nomargin}>List of all posts:</h4>
               </div>
-              <SearchBar/>
+              <SearchBar handleSearch={this.handleSearch}/>
               {posts.length > 0 ? posttemplate : <div className="card-content">Nothing found</div> }
             </div>
           </div>
