@@ -31,7 +31,7 @@ class App extends React.Component {
     this.handleUpdate = this.handleUpdate.bind(this);
   }
   componentDidMount() {
-    fetch(`http://localhost:5000/api/posts`).then(resp => resp.json()).then(posts => {
+    fetch(`localhost:5000/api/posts`).then(resp => resp.json()).then(posts => {
       this.setState({posts});
     });
   }
@@ -39,7 +39,7 @@ class App extends React.Component {
     event.preventDefault();
     let form = {...this.state.form}
     console.log(form);
-    fetch("http://localhost:5000/api/posts", {
+    fetch("localhost:5000/api/posts", {
          method: "POST",
          body: JSON.stringify(form),
          headers: {
@@ -69,9 +69,9 @@ class App extends React.Component {
 
   handleDelete(id) {
     console.log(id);
-    axios.delete(`http://localhost:5000/api/posts/${id}`).then(response => {
+    axios.delete(`localhost:5000/api/posts/${id}`).then(response => {
       console.log("Slide deleted successful: ", response);
-      fetch(`http://localhost:5000/api/posts`).then(resp => resp.json()).then(posts => {
+      fetch(`localhost:5000/api/posts`).then(resp => resp.json()).then(posts => {
         this.setState({posts});
         M.toast({html: 'Post deleted!'})
       });
@@ -82,9 +82,9 @@ class App extends React.Component {
 
   handleUpdate(event, post){
     event.preventDefault()
-    axios.put(`http://localhost:5000/api/posts/${post._id}`, this.state.form).then(response => {
+    axios.put(`localhost:5000/api/posts/${post._id}`, this.state.form).then(response => {
       console.log("Slide edited successful: ", response);
-      fetch(`http://localhost:5000/api/posts`).then(resp => resp.json()).then(posts => {
+      fetch(`localhost:5000/api/posts`).then(resp => resp.json()).then(posts => {
         this.setState({posts, editing: null});
         M.toast({html: 'Post updated successfully!'})
 
