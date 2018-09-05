@@ -1,3 +1,4 @@
+
 var mongoose   = require('mongoose');
 
 var dbConfig = require('./db');
@@ -20,7 +21,6 @@ app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, '../src')));
 
-var port = process.env.PORT || 8080;        // set our port
 
 // view engine setup
 app.set('views', path.join(__dirname, '../views'));
@@ -39,7 +39,5 @@ var post_routes     = require('./routes/posts')(router);
 app.use('/', index_routes);
 app.use('/api', post_routes);
 
-// START THE SERVER
-// =============================================================================
-app.listen(port);
-console.log('Magic happens on port ' + port);
+module.exports = app;
+
