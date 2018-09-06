@@ -3,6 +3,8 @@ import axios from 'axios';
 import Post from './Post.jsx';
 import SearchBar from './SearchBar.jsx';
 import CreatePost from './CreatePost.jsx';
+const domain = process.env.DOMAIN;
+const port = process.env.PORT;
 
 const styles = {
   flexed: {
@@ -30,16 +32,25 @@ class App extends React.Component {
     this.handleUnedit = this.handleUnedit.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
   }
+
   componentDidMount() {
-    fetch(`localhost:5000/api/posts`).then(resp => resp.json()).then(posts => {
-      this.setState({posts});
-    });
+    fetch(`${domain}:${port}/api/posts`)
+      .then(resp => resp.json())
+      .then(posts => {
+          this.setState({posts});
+        })
+      .catch(function(e) {
+        console.log('error', e);
+      })
+      .catch(function(e) {
+        console.log('error', e);
+      });
   }
+
   handleSubmit(event) {
     event.preventDefault();
     let form = {...this.state.form}
-    console.log(form);
-    fetch("localhost:5000/api/posts", {
+    fetch(`${domain}:${port}/api/posts`, {
          method: "POST",
          body: JSON.stringify(form),
          headers: {
@@ -52,9 +63,10 @@ class App extends React.Component {
          posts.push(response.post)
          this.setState({posts});
          document.forms["submitform"].reset()
+         console.log("Slide created successful: ", response);
        });
-
   }
+
   handleChange(e) {
     let form = { ...this.state.form };
     if (e.target.value !== "") {
@@ -68,10 +80,9 @@ class App extends React.Component {
   }
 
   handleDelete(id) {
-    console.log(id);
-    axios.delete(`localhost:5000/api/posts/${id}`).then(response => {
+    axios.delete(`${domain}:${port}/api/posts/${id}`).then(response => {
       console.log("Slide deleted successful: ", response);
-      fetch(`localhost:5000/api/posts`).then(resp => resp.json()).then(posts => {
+      fetch(`${domain}:${port}/api/posts`).then(resp => resp.json()).then(posts => {
         this.setState({posts});
         M.toast({html: 'Post deleted!'})
       });
@@ -82,9 +93,9 @@ class App extends React.Component {
 
   handleUpdate(event, post){
     event.preventDefault()
-    axios.put(`localhost:5000/api/posts/${post._id}`, this.state.form).then(response => {
+    axios.put(`${domain}:${port}/api/posts/${post._id}`, this.state.form).then(response => {
       console.log("Slide edited successful: ", response);
-      fetch(`localhost:5000/api/posts`).then(resp => resp.json()).then(posts => {
+      fetch(`${domain}:${port}/api/posts`).then(resp => resp.json()).then(posts => {
         this.setState({posts, editing: null});
         M.toast({html: 'Post updated successfully!'})
 
